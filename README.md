@@ -5,7 +5,21 @@
 Python 版本: 3.7
 
 ### 使用方法
-下载[FFmpeg](https://evermeet.cx/ffmpeg/ffmpeg-4.1.1.dmg)(链接版本 v4.1.1)，下载完成后解压文件 **ffmpeg** 至 Home 文件夹下 ffmpeg 子目录中。(存放路径可在 ffmpeg_converter.py 中修改)
+终端中逐条运行以下命令下载FFmpeg
+
+```
+# 下载 FFmpeg 最新发行版
+wget --trust-server-names https://evermeet.cx/ffmpeg/getrelease/dmg
+
+# 将 DMG 挂载在 /Volumes 下
+hdiutil attach ffmpeg*.dmg
+
+# 复制 ffmpeg 到 ffmpeg文件夹下
+cp -rf /Volumes/FFmpeg*/ffmpeg ~/ffmpeg/
+
+# 推出
+hdiutil detach /Volumes/FFmpeg*
+```
 
 设置文件输出路径
 
