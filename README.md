@@ -71,3 +71,5 @@ pyinstaller --onefile --clean /Users/tianjierong/Documents/GitHub/FFmpeg_convert
 
 使用 pyinstaller 进行封装。
 
+添加 ffmpeg 下载方式。
+
