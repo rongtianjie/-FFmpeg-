@@ -8,14 +8,55 @@ Created on Fri Feb 22 14:01:26 2019
 """
 
 import subprocess
+import os
 import sys
+import termios
 import time
 import tkinter as tk
 from tkinter import filedialog
 
+version = "1.0" #版本号
+ffmpeg_path = "~/ffmpeg/" # 默认 ffmpeg 存放路径
+output_path = "~/Downloads/ffmpeg_output/" # 文件输出路径
+
+def welcome(): # 欢迎界面
+	print ("")
+	print ("")
+	print ("############################")
+	print ("##                        ##")
+	print ("##  Video Converter v%s  ##" %(version))
+	print ("##                        ##")
+	print ("############################")
+	print ("")
+def press_any_key_exit(msg): # 
+  # 获取标准输入的描述符
+  fd = sys.stdin.fileno()
+
+  # 获取标准输入(终端)的设置
+  old_ttyinfo = termios.tcgetattr(fd)
+
+  # 配置终端
+  new_ttyinfo = old_ttyinfo[:]
+
+  # 使用非规范模式(索引3是c_lflag 也就是本地模式)
+  new_ttyinfo[3] &= ~termios.ICANON
+  # 关闭回显(输入不会被显示)
+  new_ttyinfo[3] &= ~termios.ECHO
+
+  # 输出信息
+  sys.stdout.write(msg)
+  sys.stdout.flush()
+  # 使设置生效
+  termios.tcsetattr(fd, termios.TCSANOW, new_ttyinfo)
+  # 从终端读取
+  os.read(fd, 7)
+
+  # 还原终端设置
+  termios.tcsetattr(fd, termios.TCSANOW, old_ttyinfo)
 def select():			# 源文件选择
     print ("Please select the origin video file: ")
-    time.sleep(1)
+    press_any_key_exit("Press any key to continue...")
+ 
     root = tk.Tk()
     root.withdraw()
     path = filedialog.askopenfilename()
@@ -79,7 +120,7 @@ def filename():			# 输出文件名设置
 def command():			# 指令生成
 	file_origin = select()
 	time.sleep(0.5)
-	info = "~/ffmpeg/ffmpeg -i " + file_origin
+	info = ffmpeg_path + "ffmpeg -i " + file_origin
 	subprocess.call(info, shell=True)
 	print ("")
 	print ("Do you want to convert the file?")
@@ -125,10 +166,14 @@ def command():			# 指令生成
 		sys.exit()
 
 	# 生成指令
-	command_str = "~/ffmpeg/ffmpeg -i " + file_origin + " -c:v " + v_encoder_str + " -c:a copy -preset " + speed_str + " ~/Downloads/ffmpeg_output/" + filename_str + "." + format_str
+	command_str = ffmpeg_path + "ffmpeg -i " + file_origin + " -c:v " + v_encoder_str + " -c:a copy -preset " + speed_str + " " + output_path + filename_str + "." + format_str
 
 	return command_str 		  		
 
+welcome()
 str = command()
 #print (str)
 subprocess.call(str, shell=True)
+
+press_any_key_exit("Press any key to exit...")
+sys.exit() #程序退出
